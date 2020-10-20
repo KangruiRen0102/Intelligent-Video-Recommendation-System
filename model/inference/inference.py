@@ -6,7 +6,6 @@ from tensorflow.keras import layers
 import sys
 
 
-
 class RecommenderNet(keras.Model):
     def __init__(self, num_users, num_movies, embedding_size, **kwargs):
         super(RecommenderNet, self).__init__(**kwargs)
@@ -80,13 +79,10 @@ def inference_service(user_id):
     ratings = model.predict(user_movie_array).flatten()
     top_ratings_indices = ratings.argsort()[-20:][::-1]
 
-    print(top_ratings_indices)
     return top_ratings_indices
 
 
 if __name__ == '__main__':
     user_id = int(sys.argv[1])
     indices = inference_service(user_id)
-    sys.stdout.write(indices)
-    sys.stdout.flush()
-    sys.exit(0)
+    print(','.join(map(str, indices)))
