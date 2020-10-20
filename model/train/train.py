@@ -3,18 +3,11 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-import matplotlib.pyplot as plt
 
-movie_df = pd.read_csv('./final_csv/movies.csv')
-rating_df = pd.read_csv('./final_csv/explicit_fb.csv')
+movie_df = pd.read_csv('../dataset/final_csv/movies.csv')
+rating_df = pd.read_csv('../dataset/final_csv/explicit_fb.csv')
 
-# print(movie_df.head(10))
-# print(rating_df.head(10))
-
-columns = []
-combined_movie_rating = pd.merge(rating_df, movie_df, on="web_id").dropna(axis = 0, subset=['movie_id'])
-
-df = combined_movie_rating
+df = pd.merge(rating_df, movie_df, on="web_id").dropna(axis = 0, subset=['movie_id'])
 
 user_ids = df["user_id"].unique().tolist()
 user2user_encoded = {x: i for i, x in enumerate(user_ids)}
@@ -95,47 +88,37 @@ model.compile(
 history = model.fit(
     x=x_train,
     y=y_train,
-    batch_size=64,
-    epochs=5,
+    batch_size=256,
+    epochs=10,
     verbose=1,
     validation_data=(x_val, y_val),
 )
 
-model.save("explicit_model.h5")
+model.save_weights("explicit_model/")
+# model.load_weights("explicit_model/")
 
-plt.plot(history.history["loss"])
-plt.plot(history.history["val_loss"])
-plt.title("model loss")
-plt.ylabel("loss")
-plt.xlabel("epoch")
-plt.legend(["train", "test"], loc="upper left")
-plt.show()
+user_id = df.web_id.sample(1).iloc[0]
+movies_watched_by_user = df[df.user_id == user_id]
+movies_not_watched = movie_df[
+    ~movie_df["web_id"].isin(movies_watched_by_user.movie_id.values)
+]["web_id"]
+movies_not_watched = list(
+    set(movies_not_watched).intersection(set(movie2movie_encoded.keys()))
+)
+movies_not_watched = [[movie2movie_encoded.get(x)] for x in movies_not_watched]
+user_encoder = user2user_encoded.get(user_id)
+user_movie_array = np.hstack(
+    ([[user_encoder]] * len(movies_not_watched), movies_not_watched)
+)
+ratings = model.predict(user_movie_array).flatten()
+top_ratings_indices = ratings.argsort()[-20:][::-1]
 
+recommended_movie_ids = [
+    movie_encoded2movie.get(movies_not_watched[x][0]) for x in top_ratings_indices
+]
 
+print("Showing recommendations for user: {}".format(user_id))
+print("====" * 9)
+print(top_ratings_indices)
 
-
-
-
-
-
-# print(combined_movie_rating.head(10))
-
-# user_rating = combined_movie_rating.drop_duplicates(["web_id", "user_id"])
-
-# movie_user_rating_pivot = user_rating.pivot(index="user_id", columns="web_id", values="rating").fillna(0)
-# print(movie_user_rating_pivot.head(10))
-
-# X = movie_user_rating_pivot.values.T
-
-# import sklearn
-# from sklearn.decomposition import TruncatedSVD
-
-# SVD = TruncatedSVD(n_components=12, random_state=17)
-# matrix = SVD.fit_transform(X)
-# print(matrix.shape)
-
-# import warnings
-# warnings.filterwarnings("ignore",category =RuntimeWarning)
-# corr = np.corrcoef(matrix)
-# print(corr.shape)
 
