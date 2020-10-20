@@ -1,5 +1,6 @@
 import com.sun.net.httpserver.HttpServer;
 
+import java.util.Scanner;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -9,6 +10,7 @@ public class Server {
   public static void main(String[] args) throws IOException {
 
     int port = 8082;
+    String pathToInference = "<AbsolutePathToInference.Py";
     System.out.printf("Starting server at %s:%d%n", InetAddress.getLocalHost().getHostName(), port);
 
     HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
@@ -25,7 +27,12 @@ public class Server {
           // ==================
           // Recommendation system inference
 
-          String recommendations = "1,2,3,4,5,6,7,8,9";
+          ProcessBuilder processBuilder = new ProcessBuilder("python3", pathToInference, userId);
+          processBuilder.redirectErrorStream(false);
+
+          Process process = processBuilder.start();
+          Scanner s = new Scanner(process.getInputStream()).useDelimiter("\\A");
+          String recommendations = s.hasNext() ? s.next() : "";
 
           // ==================
 
