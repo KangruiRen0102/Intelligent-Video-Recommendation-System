@@ -80,9 +80,3 @@ def inference_service(user_id):
     top_ratings_indices = ratings.argsort()[-20:][::-1]
 
     return top_ratings_indices
-
-
-if __name__ == '__main__':
-    user_id = int(sys.argv[1])
-    indices = inference_service(user_id)
-    print(','.join(map(str, indices)))
