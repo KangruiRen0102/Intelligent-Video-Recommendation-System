@@ -6,6 +6,11 @@ from tensorflow.keras import layers
 import sys
 
 
+ROOT = dirname(dirname(abspath(__file__)))
+DATA = join(ROOT, 'dataset', 'final_csv')
+MODEL = join(ROOT, 'checkpoint', 'explicit_model')
+
+
 class RecommenderNet(keras.Model):
     def __init__(self, num_users, num_movies, embedding_size, **kwargs):
         super(RecommenderNet, self).__init__(**kwargs)
@@ -40,8 +45,8 @@ class RecommenderNet(keras.Model):
 
 
 def inference_service(user_id):
-    movie_df = pd.read_csv('../dataset/final_csv/movies.csv')
-    rating_df = pd.read_csv('../dataset/final_csv/explicit_fb.csv')
+    movie_df = pd.read_csv(join(DATA, 'movies.csv'))
+    rating_df = pd.read_csv(join(DATA, 'explicit_fb.csv'))
     df = pd.merge(rating_df, movie_df, on="web_id").dropna(axis = 0, subset=['movie_id'])
 
     user_ids = df["user_id"].unique().tolist()
@@ -61,7 +66,7 @@ def inference_service(user_id):
     EMBEDDING_SIZE = 50
 
     model = RecommenderNet(num_users, num_movies, EMBEDDING_SIZE)
-    model.load_weights('../checkpoint/explicit_model/') 
+    model.load_weights(MODEL) 
 
     movies_watched_by_user = df[df.user_id == user_id]
     movies_not_watched = movie_df[
