@@ -3,7 +3,7 @@ from pymongo.database import Database
 
 """
 Script to extract user data from the Mongo DB user collection.
-Use the "get_users()" method to obtain a list of dicts corresponding to the docs in the user collection. 
+Use the 'get_users()' method to obtain a list of dicts corresponding to the docs in the user collection. 
 """
 
 HOST = "fall2020-comp598-1.cs.mcgill.ca"
