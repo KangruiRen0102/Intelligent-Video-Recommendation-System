@@ -1,6 +1,11 @@
 from pymongo import MongoClient
 from pymongo.database import Database
 
+"""
+Script to extract user data from the Mongo DB user collection.
+Use the "get_users()" method to obtain a list of dicts corresponding to the docs in the user collection. 
+"""
+
 HOST = "fall2020-comp598-1.cs.mcgill.ca"
 PORT = 27017
 DB = "prod_db"
@@ -23,15 +28,12 @@ def mongo_db(client: MongoClient, db_name: str):
     return client[db_name]
 
 
-def get_users(db: Database):
+def get_users():
     """
-    Returns a list containing all docs in users collection of the provided mongo db.
-
-    Parameters
-    ----------
-    db : pymongo.databases.Database
-        A mongo database that contains a user collection
+    Returns a list containing all docs in users collection of the mongo db.
     """
+    client = MongoClient(HOST, PORT)
+    db = mongo_db(client, DB)
     if "users" not in db.list_collection_names():
         raise ValueError("No user collection in {}".format(db.name))
     users = db.users
@@ -43,4 +45,4 @@ if __name__ == "__main__":
     db = mongo_db(client, DB)
     users = get_users(db)
     client.close()
-    print(users)
+    return users
