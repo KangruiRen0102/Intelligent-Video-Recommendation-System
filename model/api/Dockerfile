@@ -1,6 +1,6 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
 
-# Copy FatAPI code
+# Copy FastAPI code
 COPY api/app /app
 
 # Copy datasets and model weights
