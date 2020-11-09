@@ -41,7 +41,7 @@ def recommend(user_id: int):
     try:
         return ",".join(map(str, infer(user_id)))
     except:
-        return ",".join(sample(range(100), 20))
+        return ",".join(map(str, sample(range(10000), 20)))
 
 
 if __name__ != "__main__":

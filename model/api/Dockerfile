@@ -4,6 +4,6 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
 COPY app /app
 
 # Install requirements
-COPY api/requirements.txt ./
+COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
