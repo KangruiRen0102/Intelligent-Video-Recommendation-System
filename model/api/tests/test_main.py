@@ -6,14 +6,13 @@ import unittest
 
 from fastapi.testclient import TestClient
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(".."))
 from app.main import app
 
 text_type = "text/plain; charset=utf-8"
 
 
 class TestRecommend(unittest.TestCase):
-
     def test_recommend_invalid_str_uid(self):
         with TestClient(app) as client:
             response = client.get("/recommend/ten")
@@ -36,5 +35,5 @@ class TestRecommend(unittest.TestCase):
         assert response.headers["content-type"] == text_type
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
