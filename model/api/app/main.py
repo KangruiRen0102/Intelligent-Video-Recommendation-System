@@ -35,7 +35,7 @@ def read_root():
 
 
 @app.get("/recommend/{user_id}", response_class=PlainTextResponse)
-def read_item(user_id: int):
+def recommend(user_id: int):
     return ",".join(map(str, infer(user_id)))
 
 
