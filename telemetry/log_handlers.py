@@ -4,7 +4,7 @@ from itertools import repeat
 import os
 import sys
 
-import .parsers as p
+import parsers as p
 
 
 def format_key(movie_id, attribute):
