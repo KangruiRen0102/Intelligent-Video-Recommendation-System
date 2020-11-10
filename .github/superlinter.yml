@@ -1,7 +1,10 @@
 name: Super-Linter
 
 # Run this workflow every time a new commit pushed to your repository
-on: push
+on: push:
+  branches:
+    - main
+    - dev
 
 jobs:
   # Set the job key. The key is displayed as the job name
@@ -23,3 +26,14 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Setup python
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      # Test the inference
+      - name: Test inference
+        run: 
+          python model/inference/inference.py 6
