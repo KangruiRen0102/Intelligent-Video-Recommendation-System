@@ -7,6 +7,8 @@ from fastapi.responses import PlainTextResponse
 
 from inference import infer, prepare_model
 
+from random import sample
+
 # Set up logging
 gunicorn_error_logger = logging.getLogger("gunicorn.error")
 gunicorn_logger = logging.getLogger("gunicorn")
@@ -36,7 +38,10 @@ def read_root():
 
 @app.get("/recommend/{user_id}", response_class=PlainTextResponse)
 def recommend(user_id: int):
-    return ",".join(map(str, infer(user_id)))
+    try:
+        return ",".join(map(str, infer(user_id)))
+    except:
+        return ",".join(map(str, sample(range(10000), 20)))
 
 
 if __name__ != "__main__":
