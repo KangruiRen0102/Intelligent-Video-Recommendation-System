@@ -17,7 +17,7 @@ class TestParsers(unittest.TestCase):
         line = "2020-11-03T14:32:43.149,{},recommendation request fall2020-comp598-1.cs.mcgill.ca:8082, status 200, result: duplicity+2009, toy+story+2+1999, the+judge+2014, 65 ms".format(
             true_uid
         )
-        time, uid, recommendations = parse_recommendation_request(line)
+        time, uid, recommendations, latency = parse_recommendation_request(line)
         assert time == "2020-11-03T14:32:43.149"
         assert uid == true_uid
         assert recommendations == [
@@ -25,6 +25,7 @@ class TestParsers(unittest.TestCase):
             "toy+story+2+1999",
             "the+judge+2014",
         ]
+        assert latency == "65"
 
     def test_parse_watch_request(self):
         true_uid = str(randint(1, 100000))
