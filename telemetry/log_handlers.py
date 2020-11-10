@@ -45,11 +45,12 @@ def watch_request(line, collection):
     time, user_id, _ = line.split(",")
     movie_id, minutes = line[line.find("/m/") + 3 : line.rfind(".mpg")].split("/")
 
-    collection.update_one(
-        {"user_id": int(user_id)},
-        {"$max": {format_key(movie_id, "watched"): int(minutes.strip())}},
-        upsert=True,
-    )
+    if int(minutes) >= 0:
+        collection.update_one(
+            {"user_id": int(user_id)},
+            {"$max": {format_key(movie_id, "watched"): int(minutes.strip())}},
+            upsert=True,
+        )
 
 
 def rating_request(line, collection):
@@ -66,11 +67,12 @@ def rating_request(line, collection):
     rating_part = line[line.rfind("/") + 1 :]
     movie_id, rating = rating_part.split("=")
 
-    collection.update_one(
-        {"user_id": int(user_id)},
-        {"$set": {format_key(movie_id, "rating"): int(rating.strip())}},
-        upsert=True,
-    )
+    if 1 <= int(rating) <= 5:
+        collection.update_one(
+            {"user_id": int(user_id)},
+            {"$set": {format_key(movie_id, "rating"): int(rating.strip())}},
+            upsert=True,
+        )
 
 
 """ Example
