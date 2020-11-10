@@ -1,3 +1,9 @@
+# Test coverage
+.coverage
+
+# Python cache
+__pycache__
+
 # Compiled class file
 *.class
 
