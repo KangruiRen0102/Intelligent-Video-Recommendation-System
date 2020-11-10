@@ -4,8 +4,7 @@ from itertools import repeat
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(".."))
-from telemetry import parsers as p
+import parsers as p
 
 
 def format_key(movie_id, attribute):
