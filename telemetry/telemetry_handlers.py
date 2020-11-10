@@ -6,7 +6,7 @@ import threading
 
 from pymongo import MongoClient
 
-import parsers as p
+from telemtry.parsers as p
 
 
 def timeout_set_remove(set, item, timeout):
