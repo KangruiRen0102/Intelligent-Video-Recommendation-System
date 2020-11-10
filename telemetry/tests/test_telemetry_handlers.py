@@ -11,7 +11,7 @@ from ..telemetry_handlers import (
 )
 
 
-class TestCTRHandlers(unittest.TestCase):
+class TestTelemetryHandlers(unittest.TestCase):
     def setUp(self):
         self.tr_set = TimedRecommendationSet()
         self.mock_coll = MagicMock()
