@@ -45,4 +45,3 @@ if __name__ == "__main__":
     db = mongo_db(client, DB)
     users = get_users(db)
     client.close()
-    return users
