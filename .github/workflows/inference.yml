@@ -25,6 +25,12 @@ jobs:
           python-version: 3.8
       - run: pip install -r requirements.txt
 
+      # Download data and models
+      - name: donwload data and models
+        run:
+          python model/sync_script/automated_VM.py
+
+
       # Test the inference
       - name: Test inference
         run: 

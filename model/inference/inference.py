@@ -4,7 +4,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 import sys
-sys.path.insert(0,'.')
+sys.path.insert(0,'../../')
 
 
 class RecommenderNet(keras.Model):
@@ -40,7 +40,7 @@ class RecommenderNet(keras.Model):
         return tf.nn.sigmoid(x)
 
 
-def inference_service(user_id):
+def inference_service(user_id, model_path='../checkpoint/model/'):
     movie_df = pd.read_csv('../dataset/final_csv/movies.csv')
     rating_df = pd.read_csv('../dataset/final_csv/explicit_fb.csv')
     df = pd.merge(rating_df, movie_df, on="web_id").dropna(axis = 0, subset=['movie_id'])
@@ -62,7 +62,8 @@ def inference_service(user_id):
     EMBEDDING_SIZE = 50
 
     model = RecommenderNet(num_users, num_movies, EMBEDDING_SIZE)
-    model.load_weights('../checkpoint/explicit_model/') 
+    if model_path != 'empty':
+        model.load_weights(model_path) 
 
     movies_watched_by_user = df[df.user_id == user_id]
     movies_not_watched = movie_df[
@@ -85,5 +86,9 @@ def inference_service(user_id):
 
 if __name__ == '__main__':
     user_id = int(sys.argv[1])
-    indices = inference_service(user_id)
+    if len(sys.argv) == 3:
+        model_path = str(sys.argv[2])
+        indices = inference_service(user_id, model_path)
+    else:
+        indices = inference_service(user_id)
     print(','.join(map(str, indices)))

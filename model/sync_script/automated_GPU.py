@@ -22,13 +22,28 @@ for file1 in file_list:
     print('title: %s, id: %s' % (file1['title'], file1['id']))
     if file1['title'] == 'model.zip':
         file1.Trash()
+    elif file1['title'] == 'movies.csv' or file1['title'] == 'explicit_fb.csv':
+    	file1.Trash()
 
 
-## Delete 
+## Upload model
 shutil.make_archive("model", 'zip', "../checkpoint/model")
 file = drive.CreateFile()
 file.SetContentFile("model.zip")
 file.Upload()
 print(file['id'])
+
+
+## Upload dataset
+file = drive.CreateFile(metadata = {"title": "movies.csv"})
+file.SetContentFile("../dataset/final_csv/movies.csv")
+file.Upload()
+print(file['id'])
+
+file = drive.CreateFile(metadata = {"title": "explicit_fb.csv"})
+file.SetContentFile("../dataset/final_csv/explicit_fb.csv")
+file.Upload()
+print(file['id'])
+
 
 
