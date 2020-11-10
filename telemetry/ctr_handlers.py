@@ -42,7 +42,7 @@ def watch_event(line, collection):
     collection.insert_one(
         {
             "time": datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%f"),
-            "user_id": int(user_id) + 1,
+            "user_id": int(user_id),
             "movie_id": movie_id,
         }
     )
