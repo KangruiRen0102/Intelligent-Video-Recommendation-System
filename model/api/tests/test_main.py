@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-from ..main import app
+from ..app.main import app
 
 text_type = "text/plain; charset=utf-8"
 client = TestClient(app)
