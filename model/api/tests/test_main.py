@@ -7,7 +7,8 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
-from ..app.main import app
+sys.path.insert(0, os.path.abspath(".."))
+from app.main import app
 
 text_type = "text/plain; charset=utf-8"
 client = TestClient(app)
@@ -31,6 +32,13 @@ class TestRecommend(unittest.TestCase):
         response = client.get("/recommend/{}".format(randint(0, 20000)))
         assert response.status_code == 200
         assert response.content == b"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19"
+        assert response.headers["content-type"] == text_type
+   
+    @patch("app.main.infer", return_value=None)
+    def test_recommend_valid_uid_infer_fails(self, mock_infer):
+        response = client.get("/recommend/{}".format(randint(0, 20000)))
+        assert response.status_code == 200
+        assert re.match(r"([0-9]{1,},){19}[0-9]{1,}", response.text)
         assert response.headers["content-type"] == text_type
 
 
