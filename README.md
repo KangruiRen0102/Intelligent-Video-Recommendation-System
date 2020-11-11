@@ -4,17 +4,15 @@
 
 ![Architecture](.img/server-infra.png)
 
-## Starting the system
+## At the root of the repository
 
-### At the root of the repository
+### Starting the system
 
 ``` bash
 docker-compose up
 ```
 
-## Stopping the system
-
-### At the root of the repository
+### Stopping the system
 
 ``` bash
 docker-compose down
