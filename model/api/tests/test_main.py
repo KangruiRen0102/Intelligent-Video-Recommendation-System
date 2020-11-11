@@ -42,5 +42,13 @@ class TestRecommend(unittest.TestCase):
         assert response.headers["content-type"] == text_type
 
 
+class TestRoot(unittest.TestCase):
+    def test_root_msg(self):
+        response = client.get("/")
+        assert response.status_code == 200
+        assert response.content == b"To use our recommendation service, make a GET request to /recommend/{user_id}."
+        assert response.headers["content-type"] == text_type
+        
+        
 if __name__ == "__main__":
     unittest.main()
