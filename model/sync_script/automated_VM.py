@@ -39,12 +39,15 @@ for file1 in file_list:
     elif file1['title'] == 'explicit_fb.csv':
     	fb_id = file1['id']
 
-
+if not os.path.isdir(os.path.join(my_path,'../dataset/final_csv/')):
+	os.makedirs(os.path.join(my_path, '../dataset/final_csv/'))
 new_file = drive.CreateFile({'id': movie_id})
-# new_file.GetContentFile(os.path.join(my_path,'../dataset/final_csv/movies.csv'))
-new_file.GetContentFile('/home/runner/work/Team1_RS/Team1_RS/model/dataset/final_csv/movies.csv')
+new_file.GetContentFile(os.path.join(my_path,'../dataset/final_csv/movies.csv'))
 new_file = drive.CreateFile({'id': fb_id})
 new_file.GetContentFile(os.path.join(my_path,'../dataset/final_csv/explicit_fb.csv'))
+
+if not os.path.isdir(os.path.join(my_path,'../checkpoint/')):
+	os.makedirs(os.path.join(my_path, '../checkpoint/'))
 new_file = drive.CreateFile({'id': model_id})
 new_file.GetContentFile(os.path.join(my_path, '../checkpoint/model.zip'))
 
