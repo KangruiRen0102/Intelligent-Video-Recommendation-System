@@ -33,7 +33,22 @@ class TestRecommend(unittest.TestCase):
         assert response.status_code == 200
         assert response.content == b"0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19"
         assert response.headers["content-type"] == text_type
+   
+    @patch("app.main.infer", return_value=None)
+    def test_recommend_valid_uid_infer_fails(self, mock_infer):
+        response = client.get("/recommend/{}".format(randint(0, 20000)))
+        assert response.status_code == 200
+        assert re.match(r"([0-9]{1,},){19}[0-9]{1,}", response.text)
+        assert response.headers["content-type"] == text_type
 
 
+class TestRoot(unittest.TestCase):
+    def test_root_msg(self):
+        response = client.get("/")
+        assert response.status_code == 200
+        assert response.content == b"To use our recommendation service, make a GET request to /recommend/{user_id}."
+        assert response.headers["content-type"] == text_type
+        
+        
 if __name__ == "__main__":
     unittest.main()

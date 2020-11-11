@@ -1,7 +1,10 @@
-import logging
 from pymongo import MongoClient
-from itertools import repeat
 from functools import partial
+from itertools import repeat
+import os
+import sys
+
+import parsers as p
 
 
 def format_key(movie_id, attribute):
@@ -19,12 +22,11 @@ def recommendation_request(line, collection):
     collection : pymongo.Collection
         Represents a collection within a database in MongoDB
     """
-    time, user_id, _, _ = line[: line.find(", result:")].split(",")
-    recommendations = line[line.rfind("result:") + 7 : line.rfind(", ")]
+    time, user_id, recommendations, _ = p.parse_recommendation_request(line)
 
     if "status 200" in line:
         fcn = partial(format_key, attribute="recommend_count")
-        recommended = map(fcn, recommendations.split(","))
+        recommended = map(fcn, recommendations)
         collection.update_many(
             {"user_id": int(user_id)},
             {"$inc": dict(zip(recommended, repeat(1)))},
@@ -42,8 +44,7 @@ def watch_request(line, collection):
     collection : pymongo.Collection
         Represents a collection within a database in MongoDB
     """
-    time, user_id, _ = line.split(",")
-    movie_id, minutes = line[line.find("/m/") + 3 : line.rfind(".mpg")].split("/")
+    time, user_id, movie_id, minutes = p.parse_watch_request(line)
 
     if int(minutes) >= 0:
         collection.update_one(
@@ -63,9 +64,7 @@ def rating_request(line, collection):
     collection : pymongo.Collection
         Represents a collection within a database in MongoDB
     """
-    time, user_id, _ = line.split(",")
-    rating_part = line[line.rfind("/") + 1 :]
-    movie_id, rating = rating_part.split("=")
+    time, user_id, movie_id, rating = p.parse_rating_request(line)
 
     if 1 <= int(rating) <= 5:
         collection.update_one(
