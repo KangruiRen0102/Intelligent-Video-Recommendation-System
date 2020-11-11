@@ -39,13 +39,13 @@ for file1 in file_list:
     elif file1['title'] == 'explicit_fb.csv':
     	fb_id = file1['id']
 
-new_file = drive.CreateFile({'id': model_id})
-new_file.GetContentFile(os.path.join(my_path, '../checkpoint/model.zip'))
+
 new_file = drive.CreateFile({'id': movie_id})
 new_file.GetContentFile(os.path.join(my_path,'../dataset/final_csv/movies.csv'))
 new_file = drive.CreateFile({'id': fb_id})
 new_file.GetContentFile(os.path.join(my_path,'../dataset/final_csv/explicit_fb.csv'))
-
+new_file = drive.CreateFile({'id': model_id})
+new_file.GetContentFile(os.path.join(my_path, '../checkpoint/model.zip'))
 
 shutil.unpack_archive(os.path.join(my_path,'../checkpoint/model.zip'),
 	extract_dir=os.path.join(my_path,'../checkpoint/model/'))
