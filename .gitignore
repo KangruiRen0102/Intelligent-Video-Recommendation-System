@@ -31,3 +31,6 @@ hs_err_pid*
 *.csv
 model/dataset/
 model/checkpoint/
+
+# Python Lib
+*.pyc

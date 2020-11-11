@@ -89,12 +89,12 @@ history = model.fit(
     x=x_train,
     y=y_train,
     batch_size=256,
-    epochs=10,
+    epochs=1,
     verbose=1,
     validation_data=(x_val, y_val),
 )
 
-model.save_weights("explicit_model/")
+model.save_weights("model/")
 # model.load_weights("explicit_model/")
 
 user_id = df.web_id.sample(1).iloc[0]
