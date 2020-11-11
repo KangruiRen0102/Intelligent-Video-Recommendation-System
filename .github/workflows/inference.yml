@@ -32,6 +32,6 @@ jobs:
 
 
       # Test the inference
-      - name: Test inference
-        run: 
-          python model/inference/inference.py 6
+      # - name: Test inference
+      #   run: 
+      #     python model/inference/inference.py 6
