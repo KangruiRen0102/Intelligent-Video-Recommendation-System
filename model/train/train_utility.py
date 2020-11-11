@@ -3,12 +3,12 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-import sys
 from sklearn.metrics import mean_absolute_error, roc_auc_score
 import os
 from recommender import RecommenderNet
+import matplotlib.pyplot as plt
 
-def offline_eval(val_ratio=0.1, EMBEDDING_SIZE=50):
+def preprocess_data(val_ratio=0.1):
     my_path = os.path.abspath(os.path.dirname(__file__))
     movie_df = pd.read_csv(os.path.join(my_path, '../dataset/final_csv/movies.csv'))
     rating_df = pd.read_csv(os.path.join(my_path, '../dataset/final_csv/explicit_fb.csv'))
@@ -45,10 +45,12 @@ def offline_eval(val_ratio=0.1, EMBEDDING_SIZE=50):
         y[train_indices:],
     )
 
-    EMBEDDING_SIZE = 50
+    return (x_train, x_val, y_train, y_val, num_users, num_movies)
 
+def offline_eval(model_path, val_ratio=0.1, EMBEDDING_SIZE=50):
+    x_train, x_val, y_train, y_val, num_users, num_movies = preprocess_data(val_ratio)
     model = RecommenderNet(num_users, num_movies, EMBEDDING_SIZE)
-    model.load_weights(os.path.join(my_path, "../checkpoint/model/")) 
+    model.load_weights(model_path) 
     predictions = model.predict(x = x_val)
     MAE = mean_absolute_error(y_val , predictions)
     # AUC = roc_auc_score(y_val, predictions)
@@ -56,5 +58,38 @@ def offline_eval(val_ratio=0.1, EMBEDDING_SIZE=50):
 
     return (MAE, AUC)
 
-# if __name__ == '__main__':
-#     val_performance = offline_eval()
+
+def data_distribution(val_ratio=0.1):
+    x_train, x_val, y_train, y_val, num_users, num_movies = preprocess_data(val_ratio)
+    plt.hist(y_train, bins=5, facecolor="blue", edgecolor="black", alpha=0.7)
+    plt.show()
+
+
+def train_model(model_path, val_ratio=0.1, EMBEDDING_SIZE=50, batch_size=256, epochs=10):
+    x_train, x_val, y_train, y_val, num_users, num_movies = preprocess_data(val_ratio)
+
+    model = RecommenderNet(num_users, num_movies, EMBEDDING_SIZE)
+    model.compile(
+        loss=tf.keras.losses.BinaryCrossentropy(), optimizer=keras.optimizers.Adam(lr=0.001)
+    )
+
+    history = model.fit(
+        x=x_train,
+        y=y_train,
+        batch_size=batch_size,
+        epochs=epochs,
+        verbose=1,
+        validation_data=(x_val, y_val),
+    )
+
+    model.save_weights(model_path)
+
+def report_model(model_path, val_ratio=0.1, EMBEDDING_SIZE=50):
+    my_path = os.path.abspath(os.path.dirname(__file__))
+    if not os.path.isdir(os.path.join(my_path, '../report')):
+        os.makedirs(os.path.join(my_path, '../report'))
+    (MAE, AUC) = offline_eval(model_path, val_ratio, EMBEDDING_SIZE)
+    print(MAE, AUC)
+    data_distribution()
+
+

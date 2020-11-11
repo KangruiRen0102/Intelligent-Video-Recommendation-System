@@ -1,4 +1,4 @@
-from train import train
+from train_utility import train_model, report_model
 import argparse
 import os
 
@@ -17,5 +17,9 @@ args = parser.parse_args()
 
 
 if __name__ == '__main__':
-    train(args.val_ratio, args.embeddeding_size, args.batch_size, args.epochs)
-    # report()
+
+    my_path = os.path.abspath(os.path.dirname(__file__))
+    model_path = os.path.join(my_path, '../checkpoint/model')
+    baseline_path = os.path.join(my_path, '../checkpoint/baseline_model')
+    train_model(model_path, args.val_ratio, args.embeddeding_size, args.batch_size, args.epochs)
+    report_model(model_path, args.val_ratio, args.embeddeding_size)
