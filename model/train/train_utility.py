@@ -104,14 +104,14 @@ def report_model(model_path, baseline_path, val_ratio=0.1, EMBEDDING_SIZE=50):
     if not os.path.isdir(os.path.join(my_path, '../report')):
         os.makedirs(os.path.join(my_path, '../report'))
     report_path = os.path.join(my_path, '../report')
-    # (MSE, AUC) = offline_eval(model_path, val_ratio, EMBEDDING_SIZE)
+    (MSE, AUC) = offline_eval(model_path, val_ratio, EMBEDDING_SIZE)
     # # print(MAE, AUC)
-    # (MSE_old, AUC_old) = offline_eval(baseline_path, val_ratio, EMBEDDING_SIZE)
-    # with open(os.path.join(my_path, '../report/compare.csv'), 'w', newline='') as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(["model version", "MAE", "AUC"])
-    #     writer.writerow(["model", MSE, AUC])
-    #     writer.writerow(["baseline", MSE_old, AUC_old])
+    (MSE_old, AUC_old) = offline_eval(baseline_path, val_ratio, EMBEDDING_SIZE)
+    with open(os.path.join(my_path, '../report/compare.csv'), 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["model version", "MAE", "AUC"])
+        writer.writerow(["model", MSE, AUC])
+        writer.writerow(["baseline", MSE_old, AUC_old])
 
 
     data_distribution(report_path, val_ratio)

@@ -21,6 +21,5 @@ if __name__ == '__main__':
     my_path = os.path.abspath(os.path.dirname(__file__))
     model_path = os.path.join(my_path, '../checkpoint/model/')
     baseline_path = os.path.join(my_path, '../checkpoint/baseline_model/')
-    # train_model(model_path, args.val_ratio, args.embeddeding_size, args.batch_size, args.epochs)
+    train_model(model_path, args.val_ratio, args.embeddeding_size, args.batch_size, args.epochs)
     report_model(model_path, baseline_path, args.val_ratio, args.embeddeding_size)
-    # report_model(, args.val_ratio, args.embeddeding_size)
