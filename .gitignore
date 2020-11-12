@@ -3,6 +3,8 @@
 
 # Python cache
 __pycache__
+.pytest_cache
+
 
 # Compiled class file
 *.class
