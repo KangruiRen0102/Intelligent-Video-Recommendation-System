@@ -3,10 +3,11 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-from sklearn.metrics import mean_absolute_error, roc_auc_score
+from sklearn.metrics import mean_squared_error, roc_auc_score
 import os
 from recommender import RecommenderNet
 import matplotlib.pyplot as plt
+import csv
 
 def preprocess_data(val_ratio=0.1):
     my_path = os.path.abspath(os.path.dirname(__file__))
@@ -52,17 +53,31 @@ def offline_eval(model_path, val_ratio=0.1, EMBEDDING_SIZE=50):
     model = RecommenderNet(num_users, num_movies, EMBEDDING_SIZE)
     model.load_weights(model_path) 
     predictions = model.predict(x = x_val)
-    MAE = mean_absolute_error(y_val , predictions)
-    # AUC = roc_auc_score(y_val, predictions)
-    AUC = 0.
+    MSE = mean_squared_error(y_val , predictions)
+    y_val_binary = np.where(y_val >= 0.5, 1, 0)
+    predictions_binary = np.where(predictions >= 0.5, 1, 0)
+    AUC = roc_auc_score(y_val_binary, predictions_binary)
 
-    return (MAE, AUC)
+    return (MSE, AUC)
 
 
-def data_distribution(val_ratio=0.1):
+def data_distribution(report_path, val_ratio=0.1):
     x_train, x_val, y_train, y_val, num_users, num_movies = preprocess_data(val_ratio)
     plt.hist(y_train, bins=5, facecolor="blue", edgecolor="black", alpha=0.7)
-    plt.show()
+    plt.savefig(os.path.join(report_path, 'rate_hist.png'))
+    plt.xlabel('normalized rating')
+    plt.ylabel('numbers')
+    plt.clf()
+    plt.hist(x_train[:,0], bins=30, facecolor="blue", edgecolor="black", alpha=0.7)
+    plt.savefig(os.path.join(report_path, 'user_hist.png'))
+    plt.xlabel('user numbers')
+    plt.ylabel('numbers')
+    plt.clf()
+    plt.hist(x_train[:,1], bins=30, facecolor="blue", edgecolor="black", alpha=0.7)
+    plt.savefig(os.path.join(report_path, 'movie_hist.png'))
+    plt.xlabel('movie numbers')
+    plt.ylabel('numbers')
+    plt.clf()
 
 
 def train_model(model_path, val_ratio=0.1, EMBEDDING_SIZE=50, batch_size=256, epochs=10):
@@ -84,12 +99,21 @@ def train_model(model_path, val_ratio=0.1, EMBEDDING_SIZE=50, batch_size=256, ep
 
     model.save_weights(model_path)
 
-def report_model(model_path, val_ratio=0.1, EMBEDDING_SIZE=50):
+def report_model(model_path, baseline_path, val_ratio=0.1, EMBEDDING_SIZE=50):
     my_path = os.path.abspath(os.path.dirname(__file__))
     if not os.path.isdir(os.path.join(my_path, '../report')):
         os.makedirs(os.path.join(my_path, '../report'))
-    (MAE, AUC) = offline_eval(model_path, val_ratio, EMBEDDING_SIZE)
-    print(MAE, AUC)
-    data_distribution()
+    report_path = os.path.join(my_path, '../report')
+    # (MSE, AUC) = offline_eval(model_path, val_ratio, EMBEDDING_SIZE)
+    # # print(MAE, AUC)
+    # (MSE_old, AUC_old) = offline_eval(baseline_path, val_ratio, EMBEDDING_SIZE)
+    # with open(os.path.join(my_path, '../report/compare.csv'), 'w', newline='') as file:
+    #     writer = csv.writer(file)
+    #     writer.writerow(["model version", "MAE", "AUC"])
+    #     writer.writerow(["model", MSE, AUC])
+    #     writer.writerow(["baseline", MSE_old, AUC_old])
+
+
+    data_distribution(report_path, val_ratio)
 
 
