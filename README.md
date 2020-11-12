@@ -53,14 +53,14 @@ To use the recommeder system:
 │       └── requirements.txt                  
 │   └── sync_script                 <- Scripts to sync data between local machine and VM (using GoogleDrive as intermediary storage).
 │       ├── automated_GPU.py        <- Uploads new model from local machine to Google Drive.
-│       ├── automated_VM.py         <- Downloads latests version from model from Google Drive to VM. 
+│       ├── automated_VM.py         <- Downloads latest version of model from Google Drive to VM. 
 │       └── client_secret.json      <- Client secrets for Google Drive. 
 │   └── train                       <- Scripts to train model and perform offline evaluation.
 ├── telemetry 
 │   ├── prometheus                  <- Config and docker-compose.yml for Prometheus server. 
 │   ├── tests                       <- Unit tests for handler and parser modules.   
 │   ├── __init__.py                           
-│   ├── log_handlers.py             <- Collects rate and watch events from Kafka records and stores them  in MongoDB.
+│   ├── log_handlers.py             <- Collects rate and watch events from Kafka records and stores them in MongoDB.
 │   ├── parser.py                   <- Helper module to parse Kafka records. 
 │   └── ctr_handlers.py             <- Computes daily click-through-rate from Kafka records and stores it in MongoDB. 
 ├── README.md                       <- The top-level README for developers using this project.
