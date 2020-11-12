@@ -31,9 +31,9 @@ async def startup_event():
     prepare_model()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@app.get("/", response_class=PlainTextResponse)
+def root_msg():
+    return "To use our recommendation service, make a GET request to /recommend/{user_id}."
 
 
 @app.get("/recommend/{user_id}", response_class=PlainTextResponse)

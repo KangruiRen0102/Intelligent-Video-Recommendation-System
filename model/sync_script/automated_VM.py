@@ -5,9 +5,22 @@ import os
 import shutil
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+import sys
 
 gauth = GoogleAuth()
-gauth.LocalWebserverAuth()
+gauth.LoadCredentialsFile("mycreds.txt")
+if gauth.credentials is None:
+    # Authenticate if they're not there
+    # gauth.LocalWebserverAuth()
+    gauth.CommandLineAuth()
+elif gauth.access_token_expired:
+    # Refresh them if expired
+    gauth.Refresh()
+else:
+    # Initialize the saved creds
+    gauth.Authorize()
+# Save the current credentials to a file
+gauth.SaveCredentialsFile("mycreds.txt")
 
 drive = GoogleDrive(gauth)
 

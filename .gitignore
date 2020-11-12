@@ -1,3 +1,9 @@
+# Test coverage
+.coverage
+
+# Python cache
+__pycache__
+
 # Compiled class file
 *.class
 
@@ -25,3 +31,6 @@ hs_err_pid*
 *.csv
 model/dataset/
 model/checkpoint/
+
+# Python Lib
+*.pyc
