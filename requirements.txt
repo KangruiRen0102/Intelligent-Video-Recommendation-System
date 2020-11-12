@@ -4,4 +4,6 @@ https://github.com/Anacletus/tensorflow-wheels/releases/download/2.0.0a0/tensorf
 PyDrive
 fastapi
 pymongo
+matplotlib
 prometheus-fastapi-instrumentator
+
