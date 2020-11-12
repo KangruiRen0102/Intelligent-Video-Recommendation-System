@@ -1,6 +1,4 @@
 import json
-import os
-import sys
 import time
 import threading
 
@@ -50,33 +48,22 @@ def recommendation_request(line, tr_set, collection, timeout=300):
     time, user_id, recommendations, latency = p.parse_recommendation_request(line)
     date = p.time_to_date(time)
 
-    # If the connection was refused, increment the corresponding count
-    if "Connection refused" in line:
-        collection.update_one(
-            {"date": date},
-            {"$inc": {"num_conn_refused": 1}},
-            upsert=True,
-        )
-    else:
-        # Add the recommend event to the TimedRecommendationSet set
-        tr_set.add(
-            json.dumps({"user_id": int(user_id), "recommendations": recommendations}),
-            timeout,
-        )
+    # Add the recommend event to the TimedRecommendationSet set
+    tr_set.add(
+        json.dumps({"user_id": int(user_id), "recommendations": recommendations}),
+        timeout,
+    )
 
-        # Update/insert the telemetry for the data
-        collection.update_one(
-            {"date": date},
-            {
-                "$inc": {
-                    "num_recommends": 1,  # Increment the num_recommends by 1
-                    "total_latency": int(
-                        latency
-                    ),  # Increment the total latency by the current latency
-                }
-            },
-            upsert=True,
-        )
+    # Update/insert the telemetry for the data
+    collection.update_one(
+        {"date": date},
+        {
+            "$inc": {
+                "num_recommends": 1  # Increment the num_recommends by 1
+            }
+        },
+        upsert=True,
+    )
 
 
 def watch_request(line, tr_set, collection):

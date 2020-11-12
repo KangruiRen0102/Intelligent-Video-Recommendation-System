@@ -4,28 +4,25 @@ import time
 import unittest
 from unittest.mock import MagicMock
 
-from ..telemetry_handlers import (
+from ..ctr_handlers import (
     TimedRecommendationSet,
     recommendation_request,
     watch_request,
 )
 
 
-class TestTelemetryHandlers(unittest.TestCase):
+class TestCTRHandlers(unittest.TestCase):
     def setUp(self):
         self.tr_set = TimedRecommendationSet()
         self.mock_coll = MagicMock()
         self.uid = randint(0, 100000)
 
     def test_recommendation_request_success(self):
-        real_latency = randint(1, 100)
-        line = "2020-11-03T14:32:43.149,23,recommendation request fall2020-comp598-1.cs.mcgill.ca:8082, status 200, result: duplicity+2009, {} ms".format(
-            real_latency
-        )
+        line = "2020-11-03T14:32:43.149,23,recommendation request fall2020-comp598-1.cs.mcgill.ca:8082, status 200, result: duplicity+2009, 65 ms"
         recommendation_request(line, self.tr_set, self.mock_coll, 1)
         self.mock_coll.update_one.assert_called_with(
             {"date": "2020-11-03"},
-            {"$inc": {"num_recommends": 1, "total_latency": real_latency}},
+            {"$inc": {"num_recommends": 1}},
             upsert=True,
         )
         assert len(self.tr_set) == 1
@@ -33,17 +30,6 @@ class TestTelemetryHandlers(unittest.TestCase):
             self.tr_set.pop()
             == '{"user_id": 23, "recommendations": ["duplicity+2009"]}'
         )
-
-    def test_recommendation_request_failure(self):
-        real_latency = randint(1, 100)
-        line = "2020-10-23T14:32:43.149,23,recommendation request fall2020-comp598-1.cs.mcgill.ca:8082, status 0, result: Connection refused: fall2020-comp598-1.cs.mcgill.ca/132.206.51.156:8082, 1369 ms"
-        recommendation_request(line, self.tr_set, self.mock_coll, 1)
-        self.mock_coll.update_one.assert_called_with(
-            {"date": "2020-10-23"},
-            {"$inc": {"num_conn_refused": 1}},
-            upsert=True,
-        )
-        assert len(self.tr_set) == 0
 
     def test_watch_request_recommended_movie(self):
         self.tr_set.add(

@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.logger import logger as fastapi_logger
 from fastapi.responses import PlainTextResponse
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from inference import infer, prepare_model
 
@@ -18,7 +19,7 @@ fastapi_logger.handlers = gunicorn_error_logger.handlers
 
 
 app = FastAPI()
-
+Instrumentator().instrument(app).expose(app)
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
