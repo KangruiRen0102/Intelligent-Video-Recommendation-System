@@ -62,9 +62,9 @@ To use the recommeder system:
 │   ├── __init__.py                           
 │   ├── log_handlers.py             <- Collects rate and watch events from Kafka records and stores them  in MongoDB.
 │   ├── parser.py                   <- Helper module to parse Kafka records. 
-│   ├── ctr_handlers.py             <- Computes daily click-through-rate from Kafka records and stores it in MongoDB. 
+│   └── ctr_handlers.py             <- Computes daily click-through-rate from Kafka records and stores it in MongoDB. 
 ├── README.md                       <- The top-level README for developers using this project.
 ├── docker-compose.yml              <- The top-level docker compose config. Starts the FastAPI app, the MongoDB, and the Prometheus server.
-├── requirements.txt                <- The top-level requirements. All requirements for unit tests are specified here.  
+└── requirements.txt                <- The top-level requirements. All requirements for unit tests are specified here.  
 
 ```
