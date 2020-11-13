@@ -1,0 +1,37 @@
+name: Inference-Test
+
+# Run this workflow every time a new commit pushed to your repository
+on: 
+  push:
+    branches:
+      - main
+      - dev
+      - action
+
+jobs:
+  # Run inference test
+  test-inference:
+    name: Test inference
+    runs-on: ubuntu-18.04
+    steps:
+      # Checks out a copy of your repository on the ubuntu-latest machine
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Setup env 
+      - name: setup env
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - run: pip install -r requirements.txt
+
+      # Download data and models
+      - name: donwload data and models
+        run:
+          python model/sync_script/automated_VM.py
+
+
+      # Test the inference
+      # - name: Test inference
+      #   run: 
+      #     python model/inference/inference.py 6

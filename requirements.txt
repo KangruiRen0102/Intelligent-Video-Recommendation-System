@@ -1,4 +1,9 @@
 pandas
 numpy
-tensorflow==1.14.0
+https://github.com/Anacletus/tensorflow-wheels/releases/download/2.0.0a0/tensorflow-2.0.0a0-cp37-cp37m-linux_x86_64.whl
+PyDrive
+fastapi
+pymongo
+matplotlib
+prometheus-fastapi-instrumentator
 
