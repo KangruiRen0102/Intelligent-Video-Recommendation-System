@@ -12,7 +12,7 @@ jobs:
   # Run inference test
   test-inference:
     name: Test inference
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
@@ -22,7 +22,7 @@ jobs:
       - name: setup env
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.7
       - run: pip install -r requirements.txt
 
       # Download data and models
