@@ -6,7 +6,7 @@ from fastapi.responses import PlainTextResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from inference import infer, prepare_model
-from periodic import Periodic, test
+from helpers import Periodic, store_recommendations, get_model_version
 
 
 app = FastAPI()
@@ -19,18 +19,24 @@ async def validation_exception_handler(request, exc):
     return PlainTextResponse("user_id must be an integer.", status_code=422)
 
 
-# Prepare model on API startup
 @app.on_event("startup")
 async def startup_event():
-    global p
-    p = Periodic(test, 30, args=[recommendations])
+    global p, model_version
+
+    # Get current model version
+    model_version = get_model_version()
+
+    # Start thread to periodically save recommendations to mongo db
+    p = Periodic(store_recommendations, 3, args=[recommendations, model_version])
     p.start()
+
+    # Prepare model to make inferences
     # prepare_model()
 
 
 @app.on_event("shutdown")
 def shutdown_event():
-    p.stop()
+    p.stop()  # Terminate thread
 
 
 @app.get("/", response_class=PlainTextResponse)

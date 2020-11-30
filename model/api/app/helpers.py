@@ -1,4 +1,10 @@
+from pymongo import MongoClient
 from threading import Event, Thread
+
+# Mongo DB configuration variables
+DB_HOST = "fall2020-comp598-1.cs.mcgill.ca"
+DB_PORT = 27017
+DB = "prod_db"
 
 
 class Periodic(object):
@@ -10,11 +16,13 @@ class Periodic(object):
     the rest of the script.
     """
 
-    def __init__(self, func, period, args=[], kwargs={}):
+    def __init__(self, func, period, args=[]):
+        args.append(_get_mongo_coll())
+        print("INITIALIZING")
         self.period = period
         self.func = func
-        self.args = args
-        self.kwargs = kwargs
+        self.args = args  # Add MongoDB collection as arg
+        print(self.args)
         self.seppuku = Event()
 
     def start(self):
@@ -32,8 +40,21 @@ class Periodic(object):
             self.seppuku.wait(self.period)
             if self.seppuku.is_set():
                 break
-            self.func(*self.args, **self.kwargs)
+            self.func(*self.args)
 
-def test(recommendations):
+
+def store_recommendations(recommendations, model_version, mongo_coll):
     print(recommendations)
+    print("VERSION", model_version)
     recommendations.clear()
+
+
+def get_model_version():
+    return 1
+
+
+def _get_mongo_coll():
+    """Return Mongo DB collection to store recommendations in."""
+    client = MongoClient(DB_HOST, DB_PORT)
+    db = client[DB]
+    return db.recommendations
