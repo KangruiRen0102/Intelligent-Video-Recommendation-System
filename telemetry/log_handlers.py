@@ -1,14 +1,7 @@
-from pymongo import MongoClient
 from functools import partial
 from itertools import repeat
-import os
-import sys
 
 import parsers as p
-
-
-def format_key(movie_id, attribute):
-    return f"{movie_id.strip()}.{attribute}"
 
 
 def recommendation_request(line, collection):
@@ -25,7 +18,7 @@ def recommendation_request(line, collection):
     time, user_id, recommendations, _ = p.parse_recommendation_request(line)
 
     if "status 200" in line:
-        fcn = partial(format_key, attribute="recommend_count")
+        fcn = partial(_format_key, attribute="recommend_count")
         recommended = map(fcn, recommendations)
         collection.update_many(
             {"user_id": int(user_id)},
@@ -49,7 +42,7 @@ def watch_request(line, collection):
     if int(minutes) >= 0:
         collection.update_one(
             {"user_id": int(user_id)},
-            {"$max": {format_key(movie_id, "watched"): int(minutes.strip())}},
+            {"$max": {_format_key(movie_id, "watched"): int(minutes.strip())}},
             upsert=True,
         )
 
@@ -69,14 +62,25 @@ def rating_request(line, collection):
     if 1 <= int(rating) <= 5:
         collection.update_one(
             {"user_id": int(user_id)},
-            {"$set": {format_key(movie_id, "rating"): int(rating.strip())}},
+            {"$set": {_format_key(movie_id, "rating"): int(rating.strip())}},
             upsert=True,
         )
 
 
+def _format_key(movie_id, attribute):
+    """Return format movie title key."""
+    encoded_title = _encode_movie_title(movie_id.strip())
+    return f"{encoded_title}.{attribute}"
+
+
+def _encode_movie_title(title):
+    """Return the encoded movie title so that there are no illegal characters for MongoDB keys."""
+    return title.replace("\\", "\\\\").replace("\$", "\\u0024").replace(".", "\\u002e")
+
+
 """ Example
 if __name__ == "__main__":
-    
+
     HOST = "localhost"
     PORT = 27017
     client = MongoClient(HOST, PORT)

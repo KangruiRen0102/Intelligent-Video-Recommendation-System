@@ -1,8 +1,6 @@
 from datetime import datetime
 
-"""
-Helper module to parse important information from raw Kafka lines. 
-"""
+"""Helper module to parse important information from raw Kafka lines."""
 
 
 def parse_recommendation_request(line):
@@ -18,8 +16,8 @@ def parse_recommendation_request(line):
             recommendations (list): Containing recommended movies
     """
     time, user_id, _, _ = line[: line.find(", result:")].split(",")
-    recommendations = line[line.rfind("result:") + 7 : line.rfind(", ")]
-    latency = line[line.rfind(", ") + 1 : line.rfind("ms")].strip()
+    recommendations = line[line.rfind("result:") + 7: line.rfind(", ")]
+    latency = line[line.rfind(", ") + 1: line.rfind("ms")].strip()
     return time, user_id, recommendations.replace(" ", "").split(","), latency
 
 
@@ -37,7 +35,7 @@ def parse_watch_request(line):
             minutes (str): The minute of the movie the user requests to watch
     """
     time, user_id, _ = line.split(",")
-    movie_id, minutes = line[line.find("/m/") + 3 : line.rfind(".mpg")].split("/")
+    movie_id, minutes = line[line.find("/m/") + 3: line.rfind(".mpg")].split("/")
     return time, user_id, movie_id, minutes
 
 
@@ -55,7 +53,7 @@ def parse_rating_request(line):
             rating (str): The rating the user assigns the movie
     """
     time, user_id, _ = line.split(",")
-    rating_part = line[line.rfind("/") + 1 :]
+    rating_part = line[line.rfind("/") + 1:]
     movie_id, rating = rating_part.split("=")
     return time, user_id, movie_id, rating
 
@@ -70,5 +68,14 @@ def time_to_date(time):
         Returns:
             date (str): The date from the timestamp in the format '%Y-%m-%d'
     """
-    time = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%f")
-    return str(time.date())  # Transform time to date
+    try:
+        time_parsed = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%f")
+    except ValueError:
+        pass
+
+    try:
+        time_parsed = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        return None
+
+    return str(time_parsed.date())  # Transform time to date

@@ -2,8 +2,6 @@ import json
 import time
 import threading
 
-from pymongo import MongoClient
-
 import parsers as p
 
 
@@ -48,22 +46,23 @@ def recommendation_request(line, tr_set, collection, timeout=300):
     time, user_id, recommendations, latency = p.parse_recommendation_request(line)
     date = p.time_to_date(time)
 
-    # Add the recommend event to the TimedRecommendationSet set
-    tr_set.add(
-        json.dumps({"user_id": int(user_id), "recommendations": recommendations}),
-        timeout,
-    )
+    if date:
+        # Add the recommend event to the TimedRecommendationSet set
+        tr_set.add(
+            json.dumps({"user_id": int(user_id), "recommendations": recommendations}),
+            timeout,
+        )
 
-    # Update/insert the telemetry for the data
-    collection.update_one(
-        {"date": date},
-        {
-            "$inc": {
-                "num_recommends": 1  # Increment the num_recommends by 1
-            }
-        },
-        upsert=True,
-    )
+        # Update/insert the telemetry for the data
+        collection.update_one(
+            {"date": date},
+            {
+                "$inc": {
+                    "num_recommends": 1  # Increment the num_recommends by 1
+                }
+            },
+            upsert=True,
+        )
 
 
 def watch_request(line, tr_set, collection):
@@ -82,23 +81,24 @@ def watch_request(line, tr_set, collection):
     )  # Parse the watch event from the line
     date = p.time_to_date(time)
 
-    # Determine if a click event occurred
-    clicked = False
-    for item in tr_set:
-        event = json.loads(item)
-        if int(user_id) == event["user_id"] and movie_id in event["recommendations"]:
-            clicked = True
-            event_to_remove = item
-            break
-    if clicked:
-        tr_set.remove(
-            event_to_remove
-        )  # Remove the corresponding recommend request from tr_set to avoid double counting
-        collection.update_one(  # increment the click count
-            {"date": date},
-            {"$inc": {"num_clicks": 1}},
-            upsert=True,
-        )
+    if date:
+        # Determine if a click event occurred
+        clicked = False
+        for item in tr_set:
+            event = json.loads(item)
+            if int(user_id) == event["user_id"] and movie_id in event["recommendations"]:
+                clicked = True
+                event_to_remove = item
+                break
+        if clicked:
+            tr_set.remove(
+                event_to_remove
+            )  # Remove the corresponding recommend request from tr_set to avoid double counting
+            collection.update_one(  # increment the click count
+                {"date": date},
+                {"$inc": {"num_clicks": 1}},
+                upsert=True,
+            )
 
 
 """Example
