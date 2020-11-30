@@ -1,6 +1,4 @@
-import os
 from random import randint
-import sys
 import unittest
 
 from ..parsers import (
@@ -51,6 +49,10 @@ class TestParsers(unittest.TestCase):
         assert mid == "walle+2008"
         assert rating == true_rating
 
-    def test_time_to_date(self):
+    def test_time_to_date_w_microseconds(self):
         date = time_to_date("2020-08-20T15:22:43.149")
+        assert date == "2020-08-20"
+
+    def test_time_to_date_wo_microseconds(self):
+        date = time_to_date("2020-08-20T15:22:43")
         assert date == "2020-08-20"

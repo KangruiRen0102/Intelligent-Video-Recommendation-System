@@ -71,11 +71,9 @@ def time_to_date(time):
     try:
         time_parsed = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%f")
     except ValueError:
-        pass
-
-    try:
-        time_parsed = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
-    except ValueError:
-        return None
+        try:
+            time_parsed = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
+        except ValueError:
+            return None
 
     return str(time_parsed.date())  # Transform time to date

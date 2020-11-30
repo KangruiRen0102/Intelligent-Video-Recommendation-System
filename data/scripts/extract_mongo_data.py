@@ -54,7 +54,5 @@ def _decode_movie_title(title):
     return title.replace("\\u002e", ".").replace("\\u0024", "\$").replace("\\\\", "\\")
 
 
-
 if __name__ == "__main__":
     users = get_users()
-    print(users)
