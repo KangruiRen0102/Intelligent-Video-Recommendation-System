@@ -12,7 +12,7 @@ It checks whether today's CTR has fallen below a predefined threshold.
 If it has, an email alert is sent to the team to notify them, allowing them to act swiftly.
 """
 
-MIN_CTR = 0.11  # Need to decide what the threshold is
+MIN_CTR = 0.0011  # Need to decide what the threshold is
 
 
 def get_mongo_db(host, port, name):
@@ -32,7 +32,7 @@ def send_ctr_alert(date, ctr):
     sender = "team1_rs@outlook.com"
     receivers = ["alexa.hernandez@mail.mcgill.ca"]
     msg = MIMEText(
-        f"Hello Team1,\n\nToday's CTR has dropped below {str(MIN_CTR)}. The CTR is {str(ctr)}.\nPlease "
+        f"Hello Team1,\n\nToday's CTR has dropped below {str(MIN_CTR*100)}%. The CTR is {str(ctr*100)}%.\nPlease "
         f"investigate immediately."
     )
 
