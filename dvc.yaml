@@ -1,0 +1,8 @@
+stages:
+  train:
+    cmd: python .\model\train\train.py --val_ratio 0.1 --embeddeding_size 50 --batch_size
+      256 --epochs 1
+    deps:
+    - .\model\dataset\final_csv\explicit_fb_db.csv
+    - .\model\dataset\final_csv\movies.csv
+    - .\model\train\train.py

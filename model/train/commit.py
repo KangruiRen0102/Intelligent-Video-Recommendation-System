@@ -5,13 +5,15 @@ def get_git_revisions_hash():
     hashes = []
     hashes.append(subprocess.check_output(['git', 'rev-parse', 'HEAD']))
     # hashes.append(subprocess.check_output(['git', 'rev-parse', 'HEAD^']))
-    return hashes
+    return hashes[0].decode('ascii')
 
 
 def write_version_to_model(path, commit_id):
     file = path + "model_version.txt"
     f = open(file, "w")
-    f.write(commit_id)
+    f.write("model version: " + commit_id)
+    f.write("dataset version: " + commit_id)
+    f.write("pipeline version: " + commit_id)
     f.close()
 
 def write_version_to_dataset(path, commit_id):
@@ -31,7 +33,7 @@ if __name__ == "__main__":
     hashes = get_git_revisions_hash()
 
     # track version files
-    print(hashes[0].decode('ascii'))
-    write_version_to_dataset(dataset_path, hashes[0].decode('ascii'))
-    write_version_to_model(model_path, hashes[0].decode('ascii'))
+    print(hashes)
+    write_version_to_dataset(dataset_path, hashes)
+    write_version_to_model(model_path, hashes)
 
