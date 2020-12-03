@@ -1,11 +1,14 @@
 from datetime import date
 from pymongo import MongoClient
 from threading import Event, Thread
+from os.path import join, dirname, abspath
 
 # Mongo DB configuration variables
 DB_HOST = "fall2020-comp598-1.cs.mcgill.ca"
 DB_PORT = 27017
 DB = "prod_db"
+ROOT = abspath(join(dirname(__file__), ".."))
+MODEL_PATH = join(ROOT, "checkpoint", "model")
 
 
 # Taken from https://gist.github.com/duckythescientist/d839603efb3dc7c828f9
@@ -75,8 +78,13 @@ def store_recommendations(recommendations, model_version, db):
 
 def get_model_version():
     """Returns the current model version that is being used."""
-    # SHOULD BE READING THE FILE W THE MODEL VERSION AND RETURNING IT.
-    return 2
+    d = {}
+    file = MODEL_PATH + "model_version.txt"
+    with open(file) as f:
+        for line in f:
+            (key, value) = line.split(",")
+            d[key] = value
+    return d["model version"]
 
 
 def _get_mongo_db():
@@ -84,3 +92,6 @@ def _get_mongo_db():
     client = MongoClient(DB_HOST, DB_PORT)
     db = client[DB]
     return db
+
+
+
