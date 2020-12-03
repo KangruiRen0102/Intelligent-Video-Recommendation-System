@@ -93,4 +93,5 @@ def clean_explicit_db():
 if __name__ == "__main__":
     clear_movie()
     # clear_user()
+    clean_explicit()
     clean_explicit_db()
