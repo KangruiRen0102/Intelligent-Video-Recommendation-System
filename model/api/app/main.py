@@ -1,6 +1,6 @@
 from os.path import join, dirname, abspath
 from datetime import datetime
-from random import sample
+from random import shuffle
 import pandas as pd
 
 from fastapi import FastAPI
@@ -18,7 +18,7 @@ app = FastAPI()
 Instrumentator().instrument(app).expose(app)  # Initialize Prometheus instrumentator
 recommendations = []  # Initialize list of recommendations to store to MongoDB
 movie_ids = []  # Get all possible web movie ids for fallback recommendation
-
+model_version = None
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
@@ -60,7 +60,8 @@ def recommend(user_id: int):
     try:
         user_recommendations = ",".join(map(str, infer(user_id)))
     except:
-        user_recommendations = ",".join(map(str, sample(movie_ids, 10)))
+        shuffle(movie_ids)
+        user_recommendations = ",".join(map(str, movie_ids[:10]))
     # Add recommendation to list of recommendations to write to DB
     recommendations.append(
         {
