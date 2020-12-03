@@ -41,3 +41,6 @@ model/checkpoint/
 
 # Python Lib
 *.pyc
+
+# IDE config files
+.idea
