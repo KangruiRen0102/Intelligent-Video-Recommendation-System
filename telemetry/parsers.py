@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 """Helper module to parse important information from raw Kafka lines."""
 
@@ -68,6 +68,21 @@ def time_to_date(time):
         Returns:
             date (str): The date from the timestamp in the format '%Y-%m-%d'
     """
+    time_parsed = parse_time(time)
+    if time_parsed:
+        return str(time_parsed.date())  # Transform time to date
+    return None
+
+
+def five_min_interval(time):
+    end = parse_time(time)
+    if end:
+        start = end - timedelta(minutes=5)
+        return start, end
+    return None
+
+
+def parse_time(time):
     try:
         time_parsed = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%f")
     except ValueError:
@@ -75,5 +90,4 @@ def time_to_date(time):
             time_parsed = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S")
         except ValueError:
             return None
-
-    return str(time_parsed.date())  # Transform time to date
+    return time_parsed

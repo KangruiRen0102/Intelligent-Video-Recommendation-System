@@ -1,3 +1,4 @@
+from datetime import datetime
 from random import randint
 import unittest
 
@@ -6,6 +7,7 @@ from ..parsers import (
     parse_watch_request,
     parse_rating_request,
     time_to_date,
+    five_min_interval
 )
 
 
@@ -56,3 +58,11 @@ class TestParsers(unittest.TestCase):
     def test_time_to_date_wo_microseconds(self):
         date = time_to_date("2020-08-20T15:22:43")
         assert date == "2020-08-20"
+
+    def test_five_min_interval(self):
+        time = "2020-08-20T15:22:43.149"
+        true_end = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%f")
+        true_start = datetime.strptime("2020-08-20T15:17:43.149", "%Y-%m-%dT%H:%M:%S.%f")
+        start, end = five_min_interval(time)
+        assert true_start == start
+        assert true_end == end
