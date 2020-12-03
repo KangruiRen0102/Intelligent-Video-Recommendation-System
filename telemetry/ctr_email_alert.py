@@ -12,7 +12,7 @@ It checks whether today's CTR has fallen below a predefined threshold.
 If it has, an email alert is sent to the team to notify them, allowing them to act swiftly.
 """
 
-MIN_CTR = 0.0011  # Need to decide what the threshold is
+MIN_CTR = -1 # Set as dummy for now #0.0011  # Need to decide what the threshold is
 
 
 def get_mongo_db(host, port, name):
