@@ -79,7 +79,7 @@ def store_recommendations(recommendations, model_version, db):
 def get_model_version():
     """Returns the current model version that is being used."""
     d = {}
-    file = MODEL_PATH + "model_version.txt"
+    file = MODEL_PATH + "/model_version.txt"
     with open(file) as f:
         for line in f:
             (key, value) = line.split(",")
