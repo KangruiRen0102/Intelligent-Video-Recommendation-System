@@ -4,6 +4,7 @@ deploy() {
     for port in $(seq $1 $2)
     do
         docker run -d -p ${port}:80 ${repo}:${version}
+        sleep 1h
     done
 }
 
@@ -12,6 +13,7 @@ remove() {
     do
         container=$(docker ps --format "{{.ID}} {{.Image}} {{.Ports}}" | awk -vport="$port" '(index($3, port) != 0) {print $1}')
         docker rm -f ${container}
+        sleep 1h
     done
 }
 
