@@ -3,6 +3,7 @@ import datetime
 from pymongo import MongoClient
 import smtplib
 import sys
+import subprocess
 
 from config_reader import load_config
 
@@ -72,4 +73,6 @@ if __name__ == "__main__":
         sys.exit()
     ctr = round(result["num_clicks"] / result["num_recommends"], 3)  # Compute CTR
     if ctr < MIN_CTR:
+        process = subprocess.Popen(["/bin/bash", "/home/localuser/PRODTeam1_RS/deployments/rollback.sh"])
+        subprocess.communicate() # Call rollback script
         send_ctr_alert(date, ctr)
