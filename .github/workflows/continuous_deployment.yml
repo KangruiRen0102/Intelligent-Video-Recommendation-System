@@ -21,3 +21,4 @@ jobs:
           cd PRODTeam1_RS
           git checkout dev
           git pull --rebase
+          git status

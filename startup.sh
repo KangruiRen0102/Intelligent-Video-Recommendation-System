@@ -9,6 +9,9 @@ then
     echo "date,commit,version,rollback" >> $FILE
 fi
 
+
 # Starting stable components of our infrastructure
-docker-compose down
 docker-compose up -d
+
+# Starting inference servers
+bash -x ${dir}/deployments/cron-daily-deploy.sh
