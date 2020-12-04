@@ -33,3 +33,7 @@ services:
     ports:
       - '9090:9090'
     restart: on-failure:5
+  
+  telemetry:
+    build: telemetry/
+    restart: on-failure:5
