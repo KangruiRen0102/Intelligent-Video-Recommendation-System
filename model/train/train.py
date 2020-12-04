@@ -11,12 +11,12 @@ parser.add_argument('--embeddeding_size', metavar='N', type=int, default=50,
                     help="embeddeding size for item and user")
 parser.add_argument('--batch_size', metavar='N', type=int, default=256,
                     help="batch size")
-parser.add_argument('--epochs', metavar='N', type=int, default=1,
+parser.add_argument('--epochs', metavar='N', type=int, default=5,
                     help="training epochs")
 args = parser.parse_args()
 
 
 if __name__ == '__main__':
     my_path = os.path.abspath(os.path.dirname(__file__))
-    model_path = os.path.join(my_path, '../checkpoint/model')
+    model_path = os.path.join(my_path, '../checkpoint/model/')
     train_model(model_path, args.val_ratio, args.embeddeding_size, args.batch_size, args.epochs)

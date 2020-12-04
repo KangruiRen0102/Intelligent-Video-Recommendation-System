@@ -22,13 +22,7 @@ This project is created with:
 ### Starting the system
 
 ``` bash
-docker-compose up
-```
-
-### Stopping the system
-
-``` bash
-docker-compose down
+bash startup.sh
 ```
 
 ## Usage

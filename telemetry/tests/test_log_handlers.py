@@ -2,7 +2,7 @@ from ..log_handlers import (
     recommendation_request,
     watch_request,
     rating_request,
-    format_key,
+    _format_key,
 )
 from unittest.mock import MagicMock
 import unittest
@@ -55,5 +55,5 @@ class TestConnection(unittest.TestCase):
     def test_format_key(self):
         movie_id = "  walle+2008 "
         attribute = "recommend_count"
-        res = format_key(movie_id, attribute)
+        res = _format_key(movie_id, attribute)
         self.assertEqual(res, "walle+2008.recommend_count")

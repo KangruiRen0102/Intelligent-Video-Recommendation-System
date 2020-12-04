@@ -1,0 +1,13 @@
+{
+   "db":{
+      "host":"fall2020-comp598-1.cs.mcgill.ca",
+      "port":27017,
+      "name":"prod_db"
+   },
+   "kafka":{
+      "topic":"movielog1",
+      "host":"fall2020-comp598.cs.mcgill.ca",
+      "port":9092,
+      "group_id":"telemetry_collector"
+   }
+}

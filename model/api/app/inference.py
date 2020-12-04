@@ -1,5 +1,4 @@
 from os.path import join, dirname, abspath
-import logging
 
 import pandas as pd
 import numpy as np
@@ -8,7 +7,6 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.python.keras.backend import set_session
 
-logging.basicConfig(filename="inference.logs", filemode="a", level=logging.DEBUG)
 
 EMBEDDING_SIZE = 50
 
@@ -100,9 +98,7 @@ def infer(user_id):
     Returns:
         top20_movies (list): Listing containing ids of top 20 movies
     """
-    logging.debug("user_id: {}".format(user_id))
     movies_watched_by_user = DF[DF.user_id == user_id]
-    logging.debug("# movies watched by user: {}".format(movies_watched_by_user.shape))
     movies_not_watched = MOVIE_DF[
         ~MOVIE_DF["web_id"].isin(movies_watched_by_user.web_id.values)
     ]["web_id"]
@@ -111,7 +107,6 @@ def infer(user_id):
     )
     movies_not_watched = [[MOVIE2MOVIE_ENCODED.get(x)] for x in movies_not_watched]
     user_encoder = USER2USER_ENCODED.get(user_id)
-    logging.debug(user_encoder)
     user_movie_array = np.hstack(
         ([[user_encoder]] * len(movies_not_watched), movies_not_watched)
     )
@@ -120,5 +115,4 @@ def infer(user_id):
         with GRAPH.as_default():
             ratings = MODEL.predict(user_movie_array).flatten()
             top20_movies = ratings.argsort()[-20:][::-1]
-            logging.debug(top20_movies)
     return top20_movies

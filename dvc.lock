@@ -1,0 +1,26 @@
+train:
+  cmd: python .\model\train\train.py --val_ratio 0.1 --embeddeding_size 50 --batch_size
+    256 --epochs 1
+  deps:
+  - path: .\model\dataset\final_csv\explicit_fb_db.csv
+    md5: 9f4c45b54656f0af0b9ac8e9092ded87
+    size: 81942
+  - path: .\model\dataset\final_csv\movies.csv
+    md5: e0e513af2038ab77cbddf57cd1773fd0
+    size: 870777
+  - path: .\model\train\train.py
+    md5: 3f02f163b3290170e5379e537315d09d
+    size: 1052
+train_ci:
+  cmd: python .\model\train\train_ci.py --val_ratio 0.1 --embeddeding_size 50 --batch_size
+    256 --epochs 1
+  deps:
+  - path: .\model\dataset\final_csv\explicit_fb_db.csv
+    md5: 9f4c45b54656f0af0b9ac8e9092ded87
+    size: 81942
+  - path: .\model\dataset\final_csv\movies.csv
+    md5: e0e513af2038ab77cbddf57cd1773fd0
+    size: 870777
+  - path: .\model\train\train.py
+    md5: 3f02f163b3290170e5379e537315d09d
+    size: 1052

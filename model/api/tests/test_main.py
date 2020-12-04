@@ -15,6 +15,9 @@ client = TestClient(app)
 
 
 class TestRecommend(unittest.TestCase):
+    def setUp(self):
+        app.model_version = 2
+
     def test_recommend_invalid_str_uid(self):
         response = client.get("/recommend/ten")
         assert response.status_code == 422
@@ -35,10 +38,11 @@ class TestRecommend(unittest.TestCase):
         assert response.headers["content-type"] == text_type
    
     @patch("app.main.infer", return_value=None)
+    @patch("app.main.movie_ids", list(range(200)))
     def test_recommend_valid_uid_infer_fails(self, mock_infer):
         response = client.get("/recommend/{}".format(randint(0, 20000)))
         assert response.status_code == 200
-        assert re.match(r"([0-9]{1,},){19}[0-9]{1,}", response.text)
+        assert re.match(r"([0-9]{1,},){9}[0-9]{1,}", response.text)
         assert response.headers["content-type"] == text_type
 
 
@@ -48,7 +52,3 @@ class TestRoot(unittest.TestCase):
         assert response.status_code == 200
         assert response.content == b"To use our recommendation service, make a GET request to /recommend/{user_id}."
         assert response.headers["content-type"] == text_type
-        
-        
-if __name__ == "__main__":
-    unittest.main()
