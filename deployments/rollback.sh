@@ -21,7 +21,7 @@ remove() {
 # Find and stop the deployment process
 dir=$(dirname -- "$(readlink -f -- "$BASH_SOURCE")")
 cdd_filepath="${dir}/cdd-pid"
-read -r cddpid < cdd_filepath
+read -r cddpid < $cdd_filepath
 kill -9 $cddpid
 
 # Mark the last deployment as unsuccesful

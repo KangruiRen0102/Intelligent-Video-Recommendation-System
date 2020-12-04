@@ -6,4 +6,4 @@ fastapi
 pymongo
 matplotlib
 prometheus-fastapi-instrumentator
-
+kafka-python

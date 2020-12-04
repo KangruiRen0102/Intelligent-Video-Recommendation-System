@@ -13,7 +13,7 @@ It checks whether today's CTR has fallen below a predefined threshold.
 If it has, an email alert is sent to the team to notify them, allowing them to act swiftly.
 """
 
-MIN_CTR = -1 # Set as dummy for now #0.0011  # Need to decide what the threshold is
+MIN_CTR = 0.0006 # Set as dummy for now #0.0011  # Need to decide what the threshold is
 
 
 def get_mongo_db(host, port, name):
@@ -73,6 +73,6 @@ if __name__ == "__main__":
         sys.exit()
     ctr = round(result["num_clicks"] / result["num_recommends"], 3)  # Compute CTR
     if ctr < MIN_CTR:
-        process = subprocess.Popen(["/bin/bash", "/home/localuser/PRODTeam1_RS/deployments/rollback.sh"])
+        process = subprocess.Popen(["/bin/bash", "/home/localuser/PRODTeam1_RS/deployments/rollback.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.communicate() # Call rollback script
         send_ctr_alert(date, ctr)
